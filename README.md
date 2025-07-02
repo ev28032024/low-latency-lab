@@ -63,6 +63,8 @@ tailscale netcheck       # оценка NAT, UDP, DERP, P2P
 
    - `Settings → Desktop → Цвет: сплошной цвет, чёрный; Стиль: отсутствует`
 
+---
+
 ### 4. Дополнительное
 
 #### Exit/Relay-узлы в Tailscale
