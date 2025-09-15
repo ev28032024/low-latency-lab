@@ -163,7 +163,7 @@ loginctl terminate-user $USER
 glxinfo | grep -i "OpenGL renderer"
 ```
 
-Ожидаемо должно быть что-то вроде `OpenGL renderer string: NVIDIA ...` (а не `llvmpipe`/software).
+Ожидаемо должно быть что-то вроде `OpenGL renderer string: NVIDIA ...` (а не `llvmpipe`/`software`).
 
 Далее проверьте, что подхватился VirtualGL:
 
