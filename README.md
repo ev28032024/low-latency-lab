@@ -182,27 +182,24 @@ nvidia-smi
 nvtop
 ```
 
-#### Диагностика и решение возможных проблем
-
-* **`libvglfaker.so: cannot open shared object file`**
-  Найдите точный путь к библиотеке и пропишите его в `LD_PRELOAD`:
-
-  ```bash
-  ldconfig -p | grep vglfaker
-  # примеры путей:
-  # /usr/lib/x86_64-linux-gnu/VirtualGL/libvglfaker.so (Debian/Ubuntu)
-  # /usr/lib64/VirtualGL/libvglfaker.so (RHEL/Alma/Fedora)
-  ```
-
-  Затем отредактируйте `~/.thinlinc/xstartup` и укажите абсолютный путь.
-
-* **`OpenGL renderer` = llvmpipe/mesa**
-  Проверьте:
-
-  * драйвер NVIDIA работает: `nvidia-smi` без ошибок;
-  * экспорт переменных `__GLX_VENDOR_LIBRARY_NAME=nvidia`, `__NV_PRIME_RENDER_OFFLOAD=1` присутствует;
-  * сессия действительно **пересоздана** после правки.
-
-#### Откат (сделать как было раньше)
-
-Закомментируйте строки в `~/.thinlinc/xstartup` и пересоздайте сессию — система вернётся к прежнему рендерингу.
+> #### Диагностика и решение возможных проблем
+>
+> * **`libvglfaker.so: cannot open shared object file`**  
+>   Найдите точный путь к библиотеке и пропишите его в `LD_PRELOAD`:
+>
+>   ```bash
+>   ldconfig -p | grep vglfaker
+>   # /usr/lib/x86_64-linux-gnu/VirtualGL/libvglfaker.so
+>   # /usr/lib64/VirtualGL/libvglfaker.so
+>   ```
+>
+>   Затем отредактируйте `~/.thinlinc/xstartup` и укажите абсолютный путь.
+>
+> * **`OpenGL renderer` = llvmpipe/mesa**  
+>   Проверьте:
+>   - драйвер NVIDIA работает: `nvidia-smi`;
+>   - переменные окружения выставлены;
+>   - сессия пересоздана.
+>
+> #### Откат
+> Закомментируйте строки в `~/.thinlinc/xstartup` и пересоздайте сессию.
