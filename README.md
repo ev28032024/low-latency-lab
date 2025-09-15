@@ -80,7 +80,7 @@ tailscale netcheck       # оценка NAT, UDP, DERP, P2P
 
 ---
 
-### 5. Переключение ThinLinc/VirtualGL на NVIDIA
+### 5. Переключение ThinLinc на NVIDIA + VirtualGL
 
 > Цель: рендерить графику в ThinLinc на NVIDIA и зайдействовать VirtualGL.
 
