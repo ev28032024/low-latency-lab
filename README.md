@@ -77,3 +77,114 @@ tailscale netcheck       # оценка NAT, UDP, DERP, P2P
 
 - Сетевое оборудование: при возможности улучшите сам канал: проверьте качество кабеля/оптики, замените Wi‑Fi на провод (Ethernet).
 - Включите приоритезацию UDP (QoS) на роутере при возможности.
+
+## 5. Переключение ThinLinc/VirtualGL на NVIDIA
+
+> Цель: рендерить графику в ThinLinc на NVIDIA и зайдействовать VirtualGL.
+
+### Предусловия
+
+На **сервере** (где запускается XFCE‑сессия):
+
+* Проприетарный драйвер NVIDIA установлен, `nvidia-smi` работает.
+* Установлен VirtualGL (даёт библиотеку `libvglfaker.so`).
+  Ubuntu/Debian: `sudo apt install virtualgl`
+* Актуальные версии ThinLinc (сервер/клиент).
+
+> Если `libvglfaker.so` не находится — см. раздел «Диагностика».
+
+### Создание `~/.thinlinc/xstartup`
+
+На сервере под **своим** пользователем:
+
+```bash
+mkdir -p ~/.thinlinc/
+nano -w ~/.thinlinc/xstartup
+```
+
+Вставьте **полностью**:
+
+```sh
+#!/bin/sh
+# ~/.thinlinc/xstartup
+
+# Разрешаем локальному пользователю доступ к X
+xhost +SI:localuser:"$USER" >/dev/null 2>&1 || true
+
+# VirtualGL: EGL‑путь для headless/современных драйверов
+export VGL_DISPLAY=egl
+# Если libvglfaker.so не в системном пути, укажите абсолютный путь:
+# export LD_PRELOAD=/usr/lib/x86_64-linux-gnu/VirtualGL/libvglfaker.so
+export LD_PRELOAD=libvglfaker.so
+
+# PRIME Render Offload / выбор NVIDIA для GL/Vulkan
+export __NV_PRIME_RENDER_OFFLOAD=1
+export __GLX_VENDOR_LIBRARY_NAME=nvidia
+export __VK_LAYER_NV_optimus=NVIDIA_only
+
+# Старт окружения
+exec startxfce4
+```
+
+Сохраните (Ctrl+O), закройте (Ctrl+X) и сделайте файл исполняемым:
+
+```bash
+chmod +x ~/.thinlinc/xstartup
+```
+
+### Пересоздание сессии
+
+В клиенте ThinLinc при входе поставьте галочку **«Пересоздать сессию»** (или завершите текущую и создайте новую), чтобы переменные окружения применились.
+
+### Проверка работы
+
+Внутри новой сессии выполните:
+
+```bash
+glxinfo | grep -i "OpenGL renderer"
+```
+
+Ожидаемо должно быть что-то вроде `OpenGL renderer string: NVIDIA ...` (а не `llvmpipe`/software).
+
+Далее проверьте, что подхватился VirtualGL:
+
+```bash
+glxgears & sleep 1
+pid=$(pgrep -n glxgears)
+grep -F libvglfaker.so /proc/$pid/maps | head -n1
+```
+
+Строка с `libvglfaker.so` подтверждает, что графика идёт через VirtualGL. При желании посмотрите загрузку GPU:
+
+```bash
+nvidia-smi
+```
+```bash
+nvtop
+```
+
+### Диагностика
+
+* **`libvglfaker.so: cannot open shared object file`**
+  Найдите точный путь к библиотеке и пропишите его в `LD_PRELOAD`:
+
+  ```bash
+  ldconfig -p | grep vglfaker
+  # примеры путей:
+  # /usr/lib/x86_64-linux-gnu/VirtualGL/libvglfaker.so (Debian/Ubuntu)
+  # /usr/lib64/VirtualGL/libvglfaker.so (RHEL/Alma/Fedora)
+  ```
+
+  Затем отредактируйте `~/.thinlinc/xstartup` и укажите абсолютный путь.
+
+* **`OpenGL renderer` = llvmpipe/mesa**
+  Проверьте:
+
+  * драйвер NVIDIA работает: `nvidia-smi` без ошибок;
+  * экспорт переменных `__GLX_VENDOR_LIBRARY_NAME=nvidia`, `__NV_PRIME_RENDER_OFFLOAD=1` присутствует;
+  * сессия действительно **пересоздана** после правки.
+
+### Откат
+
+Закомментируйте строки с `LD_PRELOAD` и offload‑переменными в `~/.thinlinc/xstartup` и пересоздайте сессию — система вернётся к прежнему рендерингу.
+
