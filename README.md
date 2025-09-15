@@ -88,7 +88,6 @@ tailscale netcheck       # оценка NAT, UDP, DERP, P2P
 
 * Проприетарный драйвер NVIDIA установлен, `nvidia-smi` работает.
 * Установлен VirtualGL (даёт библиотеку `libvglfaker.so`).
-  Ubuntu/Debian: `sudo apt install virtualgl`
 * Актуальные версии ThinLinc (сервер/клиент).
 
 > Если `libvglfaker.so` не находится — см. раздел «Диагностика».
