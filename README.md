@@ -84,8 +84,6 @@ tailscale netcheck       # оценка NAT, UDP, DERP, P2P
 
 > Цель: рендерить графику в ThinLinc на NVIDIA и зайдействовать VirtualGL.
 
-#### Предусловия
-
 На **сервере** (где запускается XFCE‑сессия):
 
 * Проприетарный драйвер NVIDIA установлен, `nvidia-smi` работает.
