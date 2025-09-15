@@ -182,6 +182,8 @@ nvidia-smi
 nvtop
 ```
 
+
+
 > #### Диагностика и решение возможных проблем
 >
 > * **`libvglfaker.so: cannot open shared object file`**  
