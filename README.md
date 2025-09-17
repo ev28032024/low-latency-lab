@@ -107,22 +107,32 @@ nano -w ~/.thinlinc/xstartup
 #!/bin/sh
 # ~/.thinlinc/xstartup
 
-# Разрешаем локальному пользователю доступ к X
 xhost +SI:localuser:"$USER" >/dev/null 2>&1 || true
 
-# VirtualGL: EGL‑путь для headless/современных драйверов
+# Enable VirtualGL
 export VGL_DISPLAY=egl
-# Если libvglfaker.so не в системном пути, укажите абсолютный путь:
-# export LD_PRELOAD=/usr/lib/x86_64-linux-gnu/VirtualGL/libvglfaker.so
 export LD_PRELOAD=libvglfaker.so
 
-# PRIME Render Offload / выбор NVIDIA для GL/Vulkan
+# Enable NVIDIA
 export __NV_PRIME_RENDER_OFFLOAD=1
 export __GLX_VENDOR_LIBRARY_NAME=nvidia
 export __VK_LAYER_NV_optimus=NVIDIA_only
 
-# Старт окружения
-exec startxfce4
+# Optimization OpenGL / VGL
+export __GL_THREADED_OPTIMIZATIONS=1
+export __GL_YIELD="NOTHING"
+export __GL_MaxFramesAllowed=1
+export __GL_SYNC_TO_VBLANK=0
+export __GL_SHADER_DISK_CACHE=1
+
+# Enable CUDA
+export CUDA_DEVICE_ORDER=PCI_BUS_ID
+export CUDA_VISIBLE_DEVICES=GPU-0804dd33-d461-27fe-04a1-741f23ccb013
+
+# Starting Session
+exec startxfce4 &
+exec nvidia-settings --load-config-only &
+wait
 ```
 
 Сохраните (Ctrl+O), закройте (Ctrl+X) и сделайте файл исполняемым:
