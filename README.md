@@ -112,13 +112,22 @@ xhost +SI:localuser:"$USER" >/dev/null 2>&1 || true
 # Enable VirtualGL
 export VGL_DISPLAY=egl
 export LD_PRELOAD=libvglfaker.so
+export VGL_LOGO=1
+
+# Optimization VirtualGL
+export VGL_ALLOWINDIRECT=1
+export VGL_FORCEALPHA=1
+export VGL_GLFLUSHTRIGGER=0
+export VGL_READBACK=pbo
+export VGL_SPOILLAST=0
+export VGL_SYNC=1
 
 # Enable NVIDIA
 export __NV_PRIME_RENDER_OFFLOAD=1
 export __GLX_VENDOR_LIBRARY_NAME=nvidia
 export __VK_LAYER_NV_optimus=NVIDIA_only
 
-# Optimization OpenGL / VGL
+# Optimization OpenGL
 export __GL_THREADED_OPTIMIZATIONS=1
 export __GL_YIELD="NOTHING"
 export __GL_MaxFramesAllowed=1
