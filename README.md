@@ -128,7 +128,6 @@ export __GLX_VENDOR_LIBRARY_NAME=nvidia
 export __VK_LAYER_NV_optimus=NVIDIA_only
 
 # Optimization OpenGL
-export __GL_THREADED_OPTIMIZATIONS=1
 export __GL_YIELD="NOTHING"
 export __GL_MaxFramesAllowed=1
 export __GL_SYNC_TO_VBLANK=0
@@ -139,8 +138,8 @@ export CUDA_DEVICE_ORDER=PCI_BUS_ID
 export CUDA_VISIBLE_DEVICES=GPU-0804dd33-d461-27fe-04a1-741f23ccb013
 
 # Starting Session
+nvidia-settings --load-config-only &
 exec startxfce4 &
-exec nvidia-settings --load-config-only &
 wait
 ```
 
